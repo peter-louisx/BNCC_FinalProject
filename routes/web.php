@@ -27,7 +27,7 @@ Route::resource('cart', CartController::class)->except(['create', 'show', 'edit'
 
 
 Route::get('/login', [UserController::class, 'login'])->middleware('guest');
-Route::post('/logout', [UserController::class, 'logout'])->name("logout-user");
+Route::post('/logout', [UserController::class, 'logout'])->name("logout-user")->middleware('auth');
 Route::get('/register', [UserController::class, 'register'])->middleware('guest');
-Route::post('/login', [UserController::class, 'authenticate'])->name("login-user");
-Route::post('/register', [UserController::class, 'registerRequest'])->name("add-user");
+Route::post('/login', [UserController::class, 'authenticate'])->name("login-user")->middleware('guest');
+Route::post('/register', [UserController::class, 'registerRequest'])->name("add-user")->middleware('guest');
