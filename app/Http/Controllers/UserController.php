@@ -60,7 +60,7 @@ class UserController extends Controller
             'name' => 'required|max:40|min:3',
             'email' => 'required|email|unique:users,email|ends_with:@gmail.com',
             'password'=> 'required|min:6|max:12|confirmed',
-            'phone_number' => 'required|numeric|starts_with:08',
+            'phone_number' => 'required|numeric|starts_with:08|digits_between:10,12',
         ]);
 
         User::create([

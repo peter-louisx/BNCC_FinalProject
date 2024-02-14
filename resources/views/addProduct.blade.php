@@ -12,7 +12,7 @@
                             @csrf
                               <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="name" name = "name">
+                                <input type="text" class="form-control" id="name" name = "name" value = "{{ old("name") }}">
                                 <div id="nameError" class="form-text">
                                   @error('name')
                                       {{ $message }}
@@ -24,7 +24,11 @@
                                 <label for = "category" class = "form-label">Category</label>
                                 <select class = "form-select" id = "category" name = "category">
                                     @foreach($categories as $category)
-                                        <option value = "{{ $category->id }}">{{ $category->name }}</option>
+                                        @if(old('category') == $category->id)
+                                            <option value = "{{ $category->id }}" selected>{{ $category->name }}</option>
+                                        @else
+                                            <option value = "{{ $category->id }}">{{ $category->name }}</option>
+                                        @endif
                                     @endforeach
                                 </select>
                                 <div id="categoryError" class="form-text">
@@ -36,7 +40,7 @@
 
                               <div class="mb-3">
                                 <label for="price" class="form-label">Price</label>
-                                <input type="number" class="form-control" id="price" name = "price" min = "0">
+                                <input type="number" class="form-control" id="price" name = "price" min = "0" value = "{{ old("price") }}">
                                 <div id="priceError" class="form-text">
                                   @error('price')
                                       {{ $message }}
@@ -56,7 +60,7 @@
 
                             <div class="mb-3">
                                 <label for="quantity" class="form-label">Quantity</label>
-                                <input type="number" class="form-control" id="quantity" name = "quantity" min = "0">
+                                <input type="number" class="form-control" id="quantity" name = "quantity" min = "0" value = "{{ old("quantity") }}">
                                 <div id="quantityError" class="form-text">
                                   @error('quantity')
                                       {{ $message }}

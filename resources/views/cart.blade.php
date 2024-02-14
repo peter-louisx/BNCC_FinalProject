@@ -21,8 +21,8 @@
 @endif
 
 @foreach($carts as $product)
-<div class = "row m-2 border p-2">
-    <div class = "col">
+<div class = "row m-2 border border-3 rounded p-2">
+    <div class = "col d-flex align-items-center">
         <img  src="{{ $product['product']['product_image']?  '/storage/' . $product['product']['product_image'] : '/OIP.jpg' }}" class = "img-fluid">
     </div>
 
@@ -77,7 +77,7 @@
         @csrf
         <div class="mb-3">
             <label for="address" class="form-label">Address</label>
-            <input type="text" class="form-control" id="address" name = "address">
+            <input type="text" class="form-control" id="address" name = "address" value = "{{ old("address") }}">
             <div id="addressError" class="form-text">
               @error('address')
                   {{ $message }}
@@ -87,7 +87,7 @@
 
         <div class="mb-3">
             <label for="post_code" class="form-label">Post Code</label>
-            <input type="text" class="form-control" id="post_code" name = "post_code">
+            <input type="text" class="form-control" id="post_code" name = "post_code" value = "{{ old("post_code") }}">
             <div id="postCodeError" class="form-text">
               @error('post_code')
                   {{ $message }}
