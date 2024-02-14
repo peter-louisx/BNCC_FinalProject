@@ -30,7 +30,7 @@ class UserController extends Controller
 
         if(Auth::attempt($credentials)){
             $request->session()->regenerate();
-            if(auth()->user()->name == "Peter Louis Anderson"){
+            if(auth()->user()->is_admin == 1){
                 return redirect()->intended('/admin');
             }else{
                 return redirect()->intended('/');

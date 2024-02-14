@@ -15,7 +15,7 @@ class checkAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!auth()->check() || auth()->user()->name != "Peter Louis Anderson"){
+        if(!auth()->check() || auth()->user()->is_admin == 0){
             if(!auth()->check()){
                 return redirect("/login");
             }else{

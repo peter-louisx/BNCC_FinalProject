@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->required();
             $table->string('password')->required()->min(6)->max(12)->required();
             $table->string('phone')->required();
+            $table->integer('is_admin')->default(0);
         });
     }
 

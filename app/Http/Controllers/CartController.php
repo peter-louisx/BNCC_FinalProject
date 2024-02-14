@@ -20,12 +20,15 @@ class CartController extends Controller
         {
             $getProduct = $product->product;
 
+            //These functions are a special case if an admin has made some changes to the product or the product stock has been been ordered from another user after the user has added the product to the cart
+            // Check if product is deleted by admin
             if(!$getProduct){
                 Cart::destroy($product->id);
                 $productChanged[] = "A product has been deleted by admin";
                 continue;
             }
 
+            // Check if product quantity is less than the quantity in cart or product is out of stock
             if($getProduct->product_quantity < $product->quantity || $getProduct->product_quantity == 0)
             {
                 $product->quantity = $getProduct->product_quantity;
@@ -60,10 +63,17 @@ class CartController extends Controller
         {
             return redirect('/')->with('error', 'Product is out of stock');
         }
+
+        $getProductInCart = Cart::where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->first();
         
-        if(Cart::where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->exists())
+        if($getProductInCart)
         {
-            Cart::where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->increment('quantity');
+            if($getProductInCart->quantity + 1 > $product->product_quantity)
+            {
+                return redirect('/')->with('error', 'You have reached the maximum quantity of this product in cart');
+            }
+
+            $getProductInCart->increment('quantity');
         }else{
             Cart::create([
                 'user_id' => auth()->user()->id,
@@ -88,6 +98,7 @@ class CartController extends Controller
         }
 
         Cart::where('id', $cart->id)->update(['quantity' => $request->quantity]);
+        
         return redirect('/cart')->with('success', 'Product quantity has been updated successfully');
     }
 
@@ -102,11 +113,10 @@ class CartController extends Controller
     {
         $request->validate([
             'address' => 'required|string|min:10|max:100',
-            'post_code' => 'required|min:5|max:5||doesnt_start_with:0',
+            'post_code' => 'required|digits:5|doesnt_start_with:0',
         ],[
-            'post_code.min' => 'Post code must be 5 digits',
-            'post_code.max' => 'Post code must be 5 digits',
-            'post_code.cannot_start_with' => 'Post code cannot start with 0',
+            'post_code.digits' => 'Post code must be 5 digits',
+            'post_code.doesnt_start_with' => 'Post code cannot start with 0',
         ]);
 
         $invoiceNumber = "";
@@ -120,10 +130,20 @@ class CartController extends Controller
 
         foreach($allProductsCart as $product)
         {
-            if($product->product == null) continue;
+            $getProduct = $product->product;
 
-            $product->product->update([
-                'product_quantity' => $product->product->product_quantity - $product->quantity,
+            //These functions also also a special case if an admin has made some changes after the user has added the product to the cart
+            if($getProduct == null){
+                return redirect('/cart');
+            }
+
+            if($getProduct->product_quantity < $product->quantity)
+            {
+                return redirect('/cart');
+            }
+
+            $getProduct->update([
+                'product_quantity' => $getProduct->product_quantity - $product->quantity,
             ]);
         }
 

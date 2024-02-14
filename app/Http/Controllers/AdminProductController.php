@@ -95,7 +95,7 @@ class AdminProductController extends Controller
     
     public function destroy(Product $product)
     {
-        Storage::delete($product->product_image);
+        if($product->product_image != NULL) Storage::delete($product->product_image);
         Product::destroy($product->id);
         return redirect("/admin")->with("success", "Product has been deleted successfully");
     }
